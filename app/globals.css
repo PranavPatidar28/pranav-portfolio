@@ -1,26 +1,488 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============================================================
+   THE BROADCAST — design system
+   A developer's signal. Bright editorial stage rendered inside
+   a simulated CRT screen, booted by a terminal. Warm near-white
+   paper, ink near-black, one clay accent, a sparing terminal green,
+   and a phosphor-amber palette reserved for the boot sequence.
+   ============================================================ */
+
+@theme {
+  /* Surfaces — the bright stage, plus the warm near-black the CRT powers on from */
+  --color-bg: #fbfbfb;
+  --color-bg-raised: #ffffff;
+  --color-bg-sunk: #f0efec;
+  --color-boot: #1a1614;
+
+  /* Ink — warm near-blacks, never pure #000 */
+  --color-ink: #2d2d2d;
+  --color-ink-soft: #55514c;
+  /* AA-compliant on both --color-bg and --color-bg-raised (~5.2:1) */
+  --color-ink-faint: #6d685f;
+  /* Ghost numerals / decorative giant type, used at low opacity */
+  --color-ink-ghost: #111111;
+  /* Hero name over the darkened, screen-lit CRT stage (light phosphor white) */
+  --color-screen-ink: #ecebe4;
+
+  /* Hairlines */
+  --color-line: #dcd8cf;
+  --color-line-soft: #e9e5dc;
+
+  /* Custom shadows — must live in @theme so Tailwind generates shadow-* */
+  --shadow-soft: 0 1px 2px rgba(27, 25, 22, 0.04),
+    0 12px 32px -8px rgba(27, 25, 22, 0.12);
+  --shadow-lift: 0 2px 6px rgba(27, 25, 22, 0.06),
+    0 30px 60px -18px rgba(27, 25, 22, 0.22);
+
+  /* Accent — clay. Used sparingly, with intent. */
+  --color-clay: #bd5b3c;
+  --color-clay-soft: #d98a6f;
+  --color-clay-deep: #9c4528;
+
+  /* Signal — terminal green. The "live" pulse, used even more sparingly. */
+  --color-signal: #1f9d57;
+  --color-signal-bright: #22c55e;
+
+  /* Broadcast blue — a channel accent (the old hardcoded hero "02" blue) */
+  --color-broadcast-blue: #1d4ed8;
+
+  /* Phosphor — amber-on-black, RESERVED for the boot/terminal sequence */
+  --color-phosphor: #030201;
+  --color-amber: #ffb000;
+  --color-amber-soft: #ffd060;
+  --color-amber-ok: #ffe566;
+
+  /* Type — broadcast roles:
+     condensed = giant name, terminal = boot/CRT chrome,
+     sans = UI/labels/body, mono = code-flavored labels */
+  --font-condensed: var(--font-barlow), "Arial Narrow", sans-serif;
+  --font-terminal: var(--font-vt323), ui-monospace, monospace;
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --ease-bounce: cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Editorial display sizes (fluid) */
+  --text-display: clamp(3rem, 9vw, 8.5rem);
+  --text-display--line-height: 0.95;
+  --text-headline: clamp(2rem, 5vw, 4rem);
+  --text-headline--line-height: 1.02;
+  /* The giant condensed hero name */
+  --text-name: clamp(4.5rem, 15vw, 14rem);
+  /* Oversized ghosted index numerals */
+  --text-index: clamp(6rem, 13vw, 22rem);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  background: var(--color-bg);
+  color: var(--color-ink);
+  /* Lenis handles scroll; keep native fallback sane */
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Selection */
+::selection {
+  background: var(--color-clay);
+  color: var(--color-bg-raised);
+}
+
+/* Eyebrow / mono label */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* Wide-tracked grotesk label — the "broadcast equipment" UI label feel */
+.label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+/* Giant condensed display utility (hero name / section heads) */
+.font-condensed {
+  font-family: var(--font-condensed);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+
+/* CRT rolling refresh band — a soft bright bar drifting down the screen, the
+   "vertical hold out of sync" roll. Slow + subtle so it reads as ambience. */
+@keyframes crt-roll {
+  0% {
+    transform: translateY(-30%);
+  }
+  100% {
+    transform: translateY(130%);
+  }
+}
+.crt-roll {
+  animation: crt-roll 7s linear infinite;
+  will-change: transform;
+}
+/* Reduced motion: the global rule only FREEZES animations, which would strand
+   a static bright bar mid-screen — hide it outright instead. */
+@media (prefers-reduced-motion: reduce) {
+  .crt-roll {
+    display: none;
+  }
+}
+
+/* Terminal / CRT chrome utility */
+.font-terminal {
+  font-family: var(--font-terminal);
+  letter-spacing: 0.04em;
+}
+
+/* ============================================================
+   HERO — heavier, screen-lit CRT (scoped to the hero only)
+   The rest of the site stays on the bright editorial stage.
+   ============================================================ */
+
+/* Giant hero name over the darkened screen: light phosphor white with a soft
+   greenish bloom. Legible first (tight white core), glow second. */
+.hero-name {
+  color: var(--color-screen-ink);
+  text-shadow:
+    0 0 0.03em rgba(236, 235, 228, 0.9),
+    0 0 0.22em rgba(120, 255, 180, 0.16),
+    0 0 0.6em rgba(120, 255, 180, 0.1);
+}
+
+/* Accent-tinted phosphor glow for the "NOW TUNED" numeral. Reads the lit
+   channel colour from a --glow custom property set inline. */
+.phosphor-text {
+  text-shadow:
+    0 0 0.04em color-mix(in srgb, var(--glow, #fff) 70%, white),
+    0 0 0.35em var(--glow, #fff),
+    0 0 1.1em var(--glow, #fff);
+}
+
+/* Heavier scanlines for the hero stage. Multiply so they sink into the dark
+   screen rather than washing it grey. The global CRTFrame scanlines recede
+   over the dark hero, so this carries the heavier raster read on its own. */
+.crt-scanlines-heavy {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.3) 0px,
+    rgba(0, 0, 0, 0.3) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+
+/* Faint power flicker — the screen never sits perfectly still. Steps so it
+   snaps like an unstable supply rather than breathing. */
+@keyframes crt-flicker {
+  0%,
+  19%,
+  21%,
+  55%,
+  57%,
+  100% {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0.86;
+  }
+  56% {
+    opacity: 0.92;
+  }
+  70% {
+    opacity: 0.97;
+  }
+  72% {
+    opacity: 0.9;
+  }
+}
+.crt-flicker {
+  animation: crt-flicker 6s steps(1, end) infinite;
+  will-change: opacity;
+}
+@media (prefers-reduced-motion: reduce) {
+  .crt-flicker {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   CHANNEL TUNER — signal bars + channel-change glitch
+   ============================================================ */
+
+/* Signal-strength bars beside each tuner channel. */
+.sig-bar {
+  width: 2px;
+  background: var(--color-ink-faint);
+  opacity: 0.35;
+  transition: background-color 0.3s, opacity 0.3s;
+}
+.sig-bar.lit {
+  background: var(--color-signal-bright);
+  opacity: 1;
+}
+@keyframes sig-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+.sig-bar.lit.peak {
+  animation: sig-flicker 1.2s steps(2, end) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .sig-bar.peak {
+    animation: none;
+  }
+}
+
+/* Channel-change glitch — fired on tune. A short RGB-split + static-snow burst
+   that self-clears (every layer animates to opacity 0; no JS timer). The
+   wrapper is remounted with a key on each tune to restart the animations. */
+@keyframes glitch-flash {
+  0% {
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  60% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes glitch-rgb-r {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    transform: translate3d(-2.5%, 1%, 0);
+  }
+  45% {
+    transform: translate3d(1.5%, -1%, 0);
+  }
+}
+@keyframes glitch-rgb-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    transform: translate3d(2.5%, -1%, 0);
+  }
+  45% {
+    transform: translate3d(-1.5%, 1%, 0);
+  }
+}
+@keyframes glitch-snow {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-14%);
+  }
+}
+@keyframes glitch-tear {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(2%);
+  }
+  60% {
+    transform: translateY(-1.5%);
+  }
+}
+.channel-glitch .layer {
+  position: absolute;
+  /* overscan so the jitter never reveals a hard edge */
+  inset: -15% 0;
+}
+.channel-glitch .snow {
+  opacity: 0;
+  /* difference blend → grayscale noise reads on ANY background (dark noise on
+     the bright sections, light noise on the dark hero), unlike screen which
+     vanishes on white. */
+  mix-blend-mode: difference;
+  background-size: 120px 120px;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 120 120' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3C/svg%3E");
+  animation: glitch-flash 0.32s steps(2, end), glitch-snow 0.32s linear;
+}
+/* brief dark "signal dropout" — the strongest readability cue on the bright
+   sections; reads as the tube losing signal for a couple frames. */
+.channel-glitch .dropout {
+  opacity: 0;
+  background: rgba(8, 7, 9, 0.55);
+  animation: glitch-flash 0.26s steps(2, end);
+}
+.channel-glitch .rgb {
+  opacity: 0;
+  /* multiply tints bright backgrounds with the colour fringe (screen would be
+     invisible on white). On the dark hero the dropout + snow carry it. */
+  mix-blend-mode: multiply;
+}
+.channel-glitch .rgb-r {
+  background: linear-gradient(transparent, rgba(255, 0, 0, 0.28), transparent);
+  animation: glitch-flash 0.28s ease-out, glitch-rgb-r 0.28s ease-out;
+}
+.channel-glitch .rgb-b {
+  background: linear-gradient(transparent, rgba(0, 90, 255, 0.28), transparent);
+  animation: glitch-flash 0.28s ease-out, glitch-rgb-b 0.28s ease-out;
+}
+.channel-glitch .tear {
+  opacity: 0;
+  /* dark hairlines so the roll-tear shows on the bright stage */
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.12) 0px,
+    rgba(0, 0, 0, 0.12) 2px,
+    transparent 2px,
+    transparent 5px
+  );
+  animation: glitch-flash 0.3s steps(1, end), glitch-tear 0.3s ease-out;
+}
+/* Reduced motion: no burst at all — the tune is an instant cut. */
+@media (prefers-reduced-motion: reduce) {
+  .channel-glitch {
+    display: none;
+  }
+}
+
+/* Thin focus ring, architectural */
+:where(a, button, input, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--color-clay);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Hide every scrollbar site-wide (Lenis drives smooth scroll; a visible bar is
+   just chrome that breaks the CRT illusion). Scrolling stays fully functional.
+   Universal because `body { overflow-x: hidden }` makes the body its own
+   scroll container (a `hidden` axis forces the other to compute to `auto`), so
+   hiding only `html` leaves the body's bar showing. */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* WebKit/Blink */
+}
+
+/* Reduced motion: strip all transitions/animations */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Grain overlay — barely-there paper/signal texture.
+   The persistent CRT canvas grain (CRTFrame) layers on top of this at runtime;
+   this static SVG grain is the no-JS / reduced-motion floor. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Hide the native cursor when the custom cursor is active (fine-pointer only).
+   Toggled by a root class set from JS so touch/reduced-motion keep the OS cursor. */
+.cursor-custom,
+.cursor-custom a,
+.cursor-custom button,
+.cursor-custom [role="button"],
+.cursor-custom input,
+.cursor-custom textarea {
+  cursor: none;
+}
+
+/* Hide scrollbar while keeping scrollability — used by the case-study card so
+   its internal scroll doesn't show a bar over the CRT composition. */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* old Edge/IE */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* WebKit/Blink */
+}
+
+/* Screen-reader-only, with a focusable escape hatch for the skip link */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+.focus\:not-sr-only:focus {
+  position: fixed;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* No-JS fallback: Framer Motion paints initial={opacity:0 / translateY}
+   inline; if JS never hydrates, force content visible so the page reads. */
+.no-js [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
 }
