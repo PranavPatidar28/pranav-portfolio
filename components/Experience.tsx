@@ -84,7 +84,7 @@ export default function Experience() {
             <div className="relative">
               <div
                 aria-hidden
-                className="pointer-events-none absolute inset-x-0 -top-px h-32 -translate-y-full bg-gradient-to-b from-transparent to-bg"
+                className="pointer-events-none absolute inset-x-0 top-px h-32 -translate-y-full bg-gradient-to-b from-transparent to-bg"
               />
               <div className="bg-bg">
                 <Work />
