@@ -51,59 +51,6 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    slug: "intellifarm",
-    title: "Intellifarm",
-    subtitle: "An India-first crop-season copilot for smallholder farmers",
-    year: "2026",
-    role: "Full-stack — API, mobile, infra",
-    blurb:
-      "A NestJS + Expo platform with phone-OTP auth, a grounded AI assistant, and IoT pump control.",
-    problem:
-      "Smallholder farmers juggle weather, crop timing, market prices, disease risk, and government schemes with almost no tooling built for them. I wanted a single copilot that plans the season, answers questions grounded in the farmer's own data, and even acts on the field.",
-    approach:
-      "I built a monorepo with a NestJS backend as the single source of truth and an Expo mobile client consuming a versioned /v1 REST API. Shared Zod contracts keep the API and client in lockstep. It runs entirely on mock/seeded providers out of the box — no API keys needed to demo — and swaps in live providers via env vars. It ships with Docker, CI, and a one-command local backend, building green from a fresh clone.",
-    highlights: [
-      "Passwordless phone-OTP auth with JWT in secure HTTP-only cookies",
-      "Deterministic rules engine for crop-season planning + timeline",
-      "Grounded AI assistant (text + voice) answering from the farmer's own data",
-      "Dual-angle photo disease triage with escalation-first logic",
-      "ESP32 IoT pump control with two-step, confirmation-gated commands",
-      "Location-aware mandi & warehouse discovery with best-price callouts",
-    ],
-    stack: ["NestJS", "Expo", "PostgreSQL", "Zod", "Turborepo", "Docker", "TypeScript"],
-    links: {
-      repo: "https://github.com/pranavpatidar28/intellifarm-rebuid",
-    },
-    domain: "Full-Stack",
-    featured: true,
-  },
-  {
-    slug: "agroradar",
-    title: "AgroRadar",
-    subtitle: "Crop-disease detection & live outbreak mapping",
-    year: "2026",
-    role: "Full-stack — API, real-time, mobile",
-    blurb:
-      "A NestJS + Prisma platform that detects crop disease and maps outbreaks in real time over Socket.IO.",
-    problem:
-      "Crop disease spreads faster than word of mouth. Farmers and agronomists need to see outbreaks as they happen across a region, not weeks later in a report.",
-    approach:
-      "I built a pnpm + Turborepo monorepo: an Expo mobile app for reporting and a NestJS backend with Prisma against a Neon PostgreSQL database. Socket.IO pushes new detections to a live outbreak map. The backend is hardened with Zod env validation, helmet, compression, structured pino logging, and a global validation pipe.",
-    highlights: [
-      "Real-time outbreak map powered by Socket.IO websockets",
-      "Prisma ORM over Neon serverless PostgreSQL",
-      "Zustand + TanStack Query split for client/server state on mobile",
-      "Production hardening: helmet, compression, structured logging, env validation",
-      "Shared strict-mode TypeScript config across the monorepo",
-    ],
-    stack: ["NestJS", "Prisma", "PostgreSQL", "Socket.IO", "Expo", "Turborepo", "TypeScript"],
-    links: {
-      repo: "https://github.com/pranavpatidar28/Crop-Disease-detection-and-map",
-    },
-    domain: "Real-Time",
-    featured: true,
-  },
-  {
     slug: "intellivault",
     title: "IntelliVault",
     subtitle: "An AI knowledge vault with semantic search",
@@ -159,6 +106,33 @@ export const projects: Project[] = [
     featured: true,
   },
   {
+    slug: "intellifarm",
+    title: "Intellifarm",
+    subtitle: "An India-first crop-season copilot for smallholder farmers",
+    year: "2026",
+    role: "Full-stack — API, mobile, infra",
+    blurb:
+      "A NestJS + Expo platform with phone-OTP auth, a grounded AI assistant, and IoT pump control.",
+    problem:
+      "Smallholder farmers juggle weather, crop timing, market prices, disease risk, and government schemes with almost no tooling built for them. I wanted a single copilot that plans the season, answers questions grounded in the farmer's own data, and even acts on the field.",
+    approach:
+      "I built a monorepo with a NestJS backend as the single source of truth and an Expo mobile client consuming a versioned /v1 REST API. Shared Zod contracts keep the API and client in lockstep. It runs entirely on mock/seeded providers out of the box — no API keys needed to demo — and swaps in live providers via env vars. It ships with Docker, CI, and a one-command local backend, building green from a fresh clone.",
+    highlights: [
+      "Passwordless phone-OTP auth with JWT in secure HTTP-only cookies",
+      "Deterministic rules engine for crop-season planning + timeline",
+      "Grounded AI assistant (text + voice) answering from the farmer's own data",
+      "Dual-angle photo disease triage with escalation-first logic",
+      "ESP32 IoT pump control with two-step, confirmation-gated commands",
+      "Location-aware mandi & warehouse discovery with best-price callouts",
+    ],
+    stack: ["NestJS", "Expo", "PostgreSQL", "Zod", "Turborepo", "Docker", "TypeScript"],
+    links: {
+      repo: "https://github.com/pranavpatidar28/intellifarm-rebuid",
+    },
+    domain: "Full-Stack",
+    featured: true,
+  },
+  {
     slug: "mojito",
     title: "Mojito",
     subtitle: "An animated cocktail showcase",
@@ -181,6 +155,32 @@ export const projects: Project[] = [
       repo: "https://github.com/pranavpatidar28/mojito-cocktails",
     },
     domain: "Frontend",
+  },
+  {
+    slug: "agroradar",
+    title: "AgroRadar",
+    subtitle: "Crop-disease detection & live outbreak mapping",
+    year: "2026",
+    role: "Full-stack — API, real-time, mobile",
+    blurb:
+      "A NestJS + Prisma platform that detects crop disease and maps outbreaks in real time over Socket.IO.",
+    problem:
+      "Crop disease spreads faster than word of mouth. Farmers and agronomists need to see outbreaks as they happen across a region, not weeks later in a report.",
+    approach:
+      "I built a pnpm + Turborepo monorepo: an Expo mobile app for reporting and a NestJS backend with Prisma against a Neon PostgreSQL database. Socket.IO pushes new detections to a live outbreak map. The backend is hardened with Zod env validation, helmet, compression, structured pino logging, and a global validation pipe.",
+    highlights: [
+      "Real-time outbreak map powered by Socket.IO websockets",
+      "Prisma ORM over Neon serverless PostgreSQL",
+      "Zustand + TanStack Query split for client/server state on mobile",
+      "Production hardening: helmet, compression, structured logging, env validation",
+      "Shared strict-mode TypeScript config across the monorepo",
+    ],
+    stack: ["NestJS", "Prisma", "PostgreSQL", "Socket.IO", "Expo", "Turborepo", "TypeScript"],
+    links: {
+      repo: "https://github.com/pranavpatidar28/Crop-Disease-detection-and-map",
+    },
+    domain: "Real-Time",
+    featured: true,
   },
 ];
 
