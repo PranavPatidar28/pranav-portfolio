@@ -45,7 +45,7 @@ export default function Hero() {
   return (
     <section
       id="arrival"
-      className="relative flex min-h-screen flex-col overflow-hidden"
+      className="relative flex min-h-[99vh] flex-col overflow-hidden"
     >
       {/* Hero-local screen-lit darkening + faint power flicker. The screen
           "powers on" dark, then warms to the bright editorial stage after ~1s
@@ -131,7 +131,7 @@ export default function Hero() {
           side={swap ? side : undefined}
           className={`${
             heroDark ? "hero-name" : "text-ink"
-          } font-condensed block translate-y-[20%] transition-colors duration-700`}
+          } font-condensed block translate-y-[5%] transition-colors duration-700`}
         />
       </h1>
     </section>
