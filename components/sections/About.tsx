@@ -6,173 +6,211 @@ import { profile, projects } from "@/lib/content";
 import { Reveal } from "@/components/Reveal";
 import ChannelSlate from "@/components/sections/ChannelSlate";
 
-/* Shared CRT raster — same value Work/Skills/Contact use, so every
-   broadcast surface rasters identically. */
 const SCANLINE =
   "repeating-linear-gradient(0deg, rgba(0,0,0,0.14) 0px, rgba(0,0,0,0.14) 1px, transparent 1px, transparent 3px)";
 
+const signalPath = [
+  { number: "01", label: "Source", title: "API & data", note: "holds the truth" },
+  { number: "02", label: "Transport", title: "Real-time", note: "keeps it live" },
+  { number: "03", label: "Output", title: "Interface", note: "feels effortless" },
+] as const;
+
 export default function About() {
+  const liveProjects = projects.filter((project) => project.links.live).length;
+
   return (
     <section
       id="about"
       className="relative px-6 py-32 sm:px-8 md:py-40 md:pl-16 md:pr-32 lg:pr-44"
     >
-      <div className="grid gap-12 md:grid-cols-12 md:gap-16">
-        {/* portrait — framed as a live studio camera monitor: B&W photo base,
-            painterly illustration crossfading in on hover, under CRT scanlines +
-            vignette with viewfinder brackets, a REC/CAM chrome row, and a
-            broadcast lower-third chyron carrying the name. */}
-        <div className="md:col-span-5">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-24 h-[46rem] opacity-65"
+        style={{
+          background:
+            "radial-gradient(50% 45% at 18% 46%, rgba(255,176,0,0.075), transparent 70%), radial-gradient(42% 40% at 82% 58%, rgba(189,91,60,0.055), transparent 74%)",
+        }}
+      />
+
+      <div className="relative grid gap-12 lg:grid-cols-12 lg:gap-16">
+        {/* A live camera feed rather than a plain profile image. The portrait
+            remains photographic at rest and resolves into the illustrated
+            operator identity on hover. */}
+        <div className="lg:sticky lg:top-[12vh] lg:col-span-5 lg:self-start">
           <Reveal>
-            <figure
-              className="group relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-sm bg-bg-sunk shadow-soft"
-              data-cursor="grow"
-            >
-              {/* base: black & white photograph */}
-              <Image
-                src="/portrait.webp"
-                alt={`${profile.name}, ${profile.role}`}
-                fill
-                sizes="(max-width: 768px) 80vw, 400px"
-                className="object-cover"
-                priority={false}
-              />
-              {/* reveal: stylized illustration, fades in on hover/focus */}
-              <Image
-                src="/portrait-art.webp"
-                alt=""
-                aria-hidden
-                fill
-                sizes="(max-width: 768px) 80vw, 400px"
-                className="object-cover opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
-              />
+            <div className="operator-camera-shell mx-auto w-full max-w-sm bg-boot p-2 shadow-lift lg:mx-0">
+              <figure
+                className="group relative aspect-[4/5] overflow-hidden bg-bg-sunk"
+                data-cursor="grow"
+              >
+                <Image
+                  src="/portrait.webp"
+                  alt={`${profile.name}, ${profile.role}`}
+                  fill
+                  sizes="(max-width: 1024px) 80vw, 400px"
+                  className="object-cover transition-[filter] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:contrast-110"
+                  priority={false}
+                />
+                <Image
+                  src="/portrait-art.webp"
+                  alt=""
+                  aria-hidden
+                  fill
+                  sizes="(max-width: 1024px) 80vw, 400px"
+                  className="object-cover opacity-0 transition-opacity duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:opacity-100"
+                />
 
-              {/* CRT screen treatment — scanlines + vignette, matching the
-                  project monitors so this reads as the same broadcast system. */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0"
-                style={{ backgroundImage: SCANLINE }}
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0"
-                style={{
-                  background:
-                    "radial-gradient(120% 100% at 50% 45%, transparent 58%, rgba(20,16,14,0.4) 100%)",
-                }}
-              />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0"
+                  style={{ backgroundImage: SCANLINE }}
+                />
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0"
+                  style={{
+                    background:
+                      "radial-gradient(115% 95% at 50% 43%, transparent 54%, rgba(12,10,9,0.48) 100%)",
+                  }}
+                />
 
-              {/* camera viewfinder corner brackets */}
-              <span className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 border-l border-t border-bg-raised/70 mix-blend-difference" />
-              <span className="pointer-events-none absolute right-2.5 top-2.5 h-4 w-4 border-r border-t border-bg-raised/70 mix-blend-difference" />
-              <span className="pointer-events-none absolute bottom-2.5 left-2.5 h-4 w-4 border-b border-l border-bg-raised/70 mix-blend-difference" />
-              <span className="pointer-events-none absolute bottom-2.5 right-2.5 h-4 w-4 border-b border-r border-bg-raised/70 mix-blend-difference" />
+                {/* viewfinder and focus target */}
+                <span className="pointer-events-none absolute left-3 top-3 h-5 w-5 border-l border-t border-bg-raised/70 mix-blend-difference" />
+                <span className="pointer-events-none absolute right-3 top-3 h-5 w-5 border-r border-t border-bg-raised/70 mix-blend-difference" />
+                <span className="pointer-events-none absolute bottom-3 left-3 h-5 w-5 border-b border-l border-bg-raised/70 mix-blend-difference" />
+                <span className="pointer-events-none absolute bottom-3 right-3 h-5 w-5 border-b border-r border-bg-raised/70 mix-blend-difference" />
+                <span className="operator-reticle pointer-events-none absolute left-1/2 top-[43%] h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border border-bg-raised/35 opacity-0 mix-blend-difference transition-opacity duration-500 group-hover:opacity-100" />
 
-              {/* top chrome row — REC indicator + camera label (CH 03 → CAM 03) */}
-              <div className="pointer-events-none absolute inset-x-5 top-4 flex items-center justify-between font-mono text-[0.62rem] uppercase tracking-[0.18em] text-bg-raised mix-blend-difference">
-                <span className="flex items-center gap-1.5">
-                  <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-signal-bright shadow-[0_0_6px_var(--color-signal-bright)]" />
-                  REC
-                </span>
-                <span>CAM 03</span>
-              </div>
-
-              {/* lower-third chyron — the broadcast name strip */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-boot/90 via-boot/40 to-transparent"
-              />
-              <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 flex items-stretch gap-3 p-4">
-                <span className="w-1 shrink-0 bg-amber" />
-                <span>
-                  <span className="block font-condensed text-2xl uppercase leading-none text-bg-raised">
-                    {profile.name}
+                <div className="pointer-events-none absolute inset-x-5 top-4 flex items-center justify-between font-mono text-[0.6rem] uppercase tracking-[0.17em] text-bg-raised mix-blend-difference">
+                  <span className="flex items-center gap-1.5">
+                    <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-signal-bright shadow-[0_0_6px_var(--color-signal-bright)]" />
+                    REC · SOURCE A
                   </span>
-                  <span className="mt-1.5 block font-mono text-[0.62rem] uppercase tracking-[0.18em] text-bg-raised/70">
-                    {profile.role} · {profile.location}
-                  </span>
-                </span>
-              </figcaption>
+                  <span>CAM 03</span>
+                </div>
 
-              <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-line" />
-            </figure>
+                <div className="pointer-events-none absolute inset-x-5 top-10 flex justify-between font-terminal text-sm text-bg-raised/75 mix-blend-difference">
+                  <span>ISO 400</span>
+                  <span>00:03:28:06</span>
+                </div>
+
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-boot/95 via-boot/55 to-transparent"
+                />
+                <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 flex items-stretch gap-3 p-5">
+                  <span className="w-1 shrink-0 bg-amber shadow-[0_0_8px_var(--color-amber)]" />
+                  <span>
+                    <span className="block font-condensed text-[1.75rem] uppercase leading-none text-bg-raised">
+                      {profile.name}
+                    </span>
+                    <span className="mt-1.5 block font-mono text-[0.6rem] uppercase tracking-[0.17em] text-bg-raised/65">
+                      {profile.role} · {profile.location}
+                    </span>
+                  </span>
+                </figcaption>
+              </figure>
+
+              {/* physical tape beneath the camera monitor */}
+              <dl className="grid grid-cols-3 gap-px bg-screen-ink/10 text-screen-ink">
+                <OperatorDatum label="Base" value={profile.location} />
+                <OperatorDatum label="Mode" value="End-to-end" />
+                <OperatorDatum label="Status" value="Available" live />
+              </dl>
+            </div>
           </Reveal>
         </div>
 
-        {/* operator profile — CH 03, the same channel the tuner lights here */}
-        <div className="md:col-span-7">
+        <div className="lg:col-span-7">
           <ChannelSlate
             channel={2}
             title="The operator"
-            status="Off air"
+            status="Identity feed"
             titleSize="clamp(2.75rem, 6vw, 5rem)"
-            className="mb-10"
+            className="mb-8"
           />
 
-          {/* bio framed as the on-air feed — broadcast card mirroring Contact's
-              transmission panel, with an amber CH 03 signal margin. Type stays
-              generous so it reads effortlessly. */}
           <Reveal delay={0.1}>
-            <div className="relative overflow-hidden rounded-sm bg-bg-raised p-7 shadow-soft sm:p-9">
-              {/* shared CRT surface + hairline bezel */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 opacity-50"
-                style={{ backgroundImage: SCANLINE }}
-              />
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 rounded-sm ring-1 ring-inset ring-line"
-              />
-              {/* amber channel signal margin */}
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-y-0 left-0 w-0.5 bg-amber"
-              />
+            <article className="operator-dossier relative overflow-hidden border border-screen-ink/10 bg-boot text-screen-ink shadow-lift">
+              <div className="operator-raster pointer-events-none absolute inset-0 opacity-45" />
+              <div className="relative p-6 sm:p-8 lg:p-9">
+                <div className="flex items-center justify-between border-b border-screen-ink/15 pb-3 font-mono text-[0.58rem] uppercase tracking-[0.18em] text-screen-ink/45">
+                  <span>Operator dossier · ID PP-028</span>
+                  <span className="flex items-center gap-1.5 text-amber-soft">
+                    <span className="h-1.5 w-1.5 rounded-full bg-amber shadow-[0_0_6px_var(--color-amber)]" />
+                    Signal verified
+                  </span>
+                </div>
 
-              {/* terminal status header */}
-              <div className="relative mb-6 flex items-center justify-between border-b border-line-soft pb-3 font-mono text-[0.6rem] uppercase tracking-[0.2em] text-ink-faint">
-                <span>Operator profile</span>
-                <span className="flex items-center gap-1.5">
-                  <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber shadow-[0_0_6px_var(--color-amber)]" />
-                  On air
-                </span>
+                <p className="mt-7 font-condensed text-[clamp(2.75rem,5.5vw,5.25rem)] leading-[0.82] text-screen-ink">
+                  I build the
+                  <br />
+                  whole thing.
+                </p>
+                <p className="mt-5 max-w-[49ch] text-base leading-relaxed text-screen-ink/65 sm:text-lg">
+                  {profile.tagline}
+                </p>
+
+                {/* The operator's end-to-end engineering path, expressed as a
+                    signal chain instead of another list of technologies. */}
+                <div className="mt-8 grid gap-px overflow-hidden border border-screen-ink/10 bg-screen-ink/10 sm:grid-cols-3">
+                  {signalPath.map((stage) => (
+                    <div
+                      key={stage.number}
+                      className="operator-path group relative bg-boot/95 p-4 sm:p-5"
+                    >
+                      <div className="flex items-center justify-between font-terminal text-base">
+                        <span className="text-amber">{stage.number}</span>
+                        <span className="h-1.5 w-1.5 rounded-full border border-amber/60 transition-[background-color,box-shadow] duration-300 group-hover:bg-amber group-hover:shadow-[0_0_7px_var(--color-amber)]" />
+                      </div>
+                      <p className="mt-4 font-mono text-[0.55rem] uppercase tracking-[0.16em] text-screen-ink/35">
+                        {stage.label}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold text-screen-ink">
+                        {stage.title}
+                      </p>
+                      <p className="mt-0.5 font-terminal text-base text-screen-ink/45">
+                        {stage.note}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-8 grid gap-6 border-t border-screen-ink/15 pt-7 sm:grid-cols-2">
+                  {profile.bio.slice(1).map((paragraph, index) => (
+                    <div key={paragraph}>
+                      <p className="font-terminal text-base text-amber-soft/80">
+                        LOG {String(index + 1).padStart(2, "0")}
+                      </p>
+                      <p className="mt-2 text-sm leading-relaxed text-screen-ink/58">
+                        {paragraph}
+                      </p>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              {/* bio — generous, legible */}
-              <div className="relative space-y-6">
-                {profile.bio.map((para, i) => (
-                  <Reveal key={i} delay={0.15 + i * 0.1}>
-                    <p className="text-lg leading-relaxed text-ink-soft">{para}</p>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-
-          {/* signal readout — broadcast equipment meters */}
-          <Reveal delay={0.4}>
-            <div className="mt-10 border-t border-line pt-6">
-              <p className="eyebrow mb-5 flex items-center gap-2">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-amber shadow-[0_0_6px_var(--color-amber)]" />
-                Signal readout
-              </p>
-              <div className="grid grid-cols-3 gap-x-6 gap-y-4">
+              {/* Telemetry belongs to the dossier instead of sitting below as
+                  a detached stats row. */}
+              <div className="relative grid grid-cols-3 gap-px border-t border-screen-ink/10 bg-screen-ink/10">
                 <Stat
                   value={String(projects.length).padStart(2, "0")}
                   label="Shipped projects"
+                  accent="var(--color-amber)"
                 />
                 <Stat
-                  value={String(
-                    projects.filter((p) => p.links.live).length,
-                  ).padStart(2, "0")}
+                  value={String(liveProjects).padStart(2, "0")}
                   label="Live deployments"
+                  accent="var(--color-signal-bright)"
                   live
                 />
-                <Stat value="100%" label="TypeScript" />
+                <Stat
+                  value="100%"
+                  label="TypeScript"
+                  accent="var(--color-clay-soft)"
+                />
               </div>
-            </div>
+            </article>
           </Reveal>
         </div>
       </div>
@@ -180,38 +218,65 @@ export default function About() {
   );
 }
 
+function OperatorDatum({
+  label,
+  value,
+  live = false,
+}: {
+  label: string;
+  value: string;
+  live?: boolean;
+}) {
+  return (
+    <div className="bg-boot/95 px-3 py-3">
+      <dt className="font-mono text-[0.5rem] uppercase tracking-[0.15em] text-screen-ink/35">
+        {label}
+      </dt>
+      <dd className="mt-1 flex items-center gap-1.5 truncate font-terminal text-base text-screen-ink/75">
+        {live && (
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-signal-bright shadow-[0_0_6px_var(--color-signal-bright)]" />
+        )}
+        {value}
+      </dd>
+    </div>
+  );
+}
+
 function Stat({
   value,
   label,
+  accent,
   live = false,
 }: {
   value: string;
   label: string;
+  accent: string;
   live?: boolean;
 }) {
   return (
-    <div>
-      {/* signal-strength meter — lit amber bars (Skills' mechanism) */}
-      <span aria-hidden className="mb-2 flex h-3.5 items-end gap-[3px]">
-        {[6, 10, 14].map((h, i) => (
+    <div
+      className="bg-boot/95 p-4 sm:p-5"
+      style={{ "--stat-accent": accent } as CSSProperties}
+    >
+      <span aria-hidden className="mb-2 flex h-3 items-end gap-[3px]">
+        {[5, 8, 11].map((height, index) => (
           <span
-            key={i}
-            className={`sig-bar lit${live && i === 2 ? " peak" : ""}`}
-            style={{ height: h, background: "var(--color-amber)", opacity: 1 }}
+            key={height}
+            className={live && index === 2 ? "animate-pulse" : undefined}
+            style={{
+              width: 3,
+              height,
+              background: "var(--stat-accent)",
+              boxShadow:
+                index === 2 ? "0 0 6px var(--stat-accent)" : undefined,
+            }}
           />
         ))}
       </span>
-      {/* value — ink glyph (full contrast) with a faint amber phosphor halo */}
-      <div
-        className="phosphor-text font-condensed text-4xl text-ink"
-        style={{ "--glow": "var(--color-amber)" } as CSSProperties}
-      >
+      <div className="font-terminal text-3xl text-[var(--stat-accent)] sm:text-4xl">
         {value}
       </div>
-      <div className="mt-1 flex items-center gap-1.5 font-mono text-xs uppercase tracking-wider text-ink-faint">
-        {live && (
-          <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-amber shadow-[0_0_6px_var(--color-amber)] motion-reduce:animate-none" />
-        )}
+      <div className="mt-1 font-mono text-[0.52rem] uppercase tracking-[0.12em] text-screen-ink/40 sm:text-[0.58rem]">
         {label}
       </div>
     </div>

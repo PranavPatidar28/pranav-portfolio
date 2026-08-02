@@ -71,7 +71,9 @@ export default function Hero() {
           the screen is dark, then settles to the standard faint ink as it warms. */}
       <p
         className="eyebrow absolute left-[9vw] top-[calc(8vh+2.25rem)] z-50 flex items-center gap-2 transition-colors duration-700"
-        style={{ color: heroDark ? "var(--color-screen-ink)" : undefined }}
+        style={{
+          color: heroDark ? "var(--color-screen-ink)" : "var(--color-ink)",
+        }}
       >
         <span className="h-2 w-2 animate-pulse rounded-full bg-signal-bright" />
         {profile.role} · {profile.location} · ON AIR
@@ -83,6 +85,104 @@ export default function Hero() {
           `focusedChannel`. A click affordance (tunes to the shown channel) but
           kept out of the tab order / a11y tree — keyboard & AT users navigate
           via the real tuner. */}
+      {/* Mobile/tablet mission statement. The full operator brief below is kept
+          for wide screens; this compact version preserves the same clarity
+          without covering the portrait on a narrow CRT. */}
+      <div className="absolute inset-x-[9vw] top-[calc(8vh+5.2rem)] z-40 xl:hidden">
+        <p
+          className="max-w-[21rem] text-[0.82rem] font-medium leading-snug tracking-[-0.01em] transition-colors duration-700 sm:text-base"
+          style={{
+            color: heroDark ? "var(--color-screen-ink)" : "var(--color-ink)",
+          }}
+        >
+          Production-grade products, real-time systems, and AI-assisted
+          experiences.
+        </p>
+        <button
+          type="button"
+          onClick={() => tuneTo(1)}
+          data-cursor="grow"
+          className="mt-3 inline-flex items-center gap-2 border-b pb-1 font-mono text-[0.62rem] uppercase tracking-[0.16em] transition-colors duration-300"
+          style={{ color: accent, borderColor: accent }}
+        >
+          View selected work
+          <span aria-hidden>↓</span>
+        </button>
+      </div>
+
+      {/* Desktop operator brief — an OSD-style panel that gives the cinematic
+          stage a clear professional message and an immediate route into the
+          work. It stays opaque enough to remain crisp over the live WebGL feed. */}
+      <aside className="hero-brief absolute right-[10vw] top-[22vh] z-40 hidden w-[min(31vw,22rem)] overflow-hidden border border-amber/20 bg-boot/[0.90] text-screen-ink shadow-lift xl:block">
+        <div className="hero-brief-grid pointer-events-none absolute inset-0 opacity-40" />
+        <div className="relative p-6 xl:p-7">
+          <div className="flex items-center justify-between border-b border-screen-ink/15 pb-3 font-terminal text-sm uppercase tracking-[0.12em] text-amber-soft">
+            <span>Operator brief</span>
+            <span className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-signal-bright shadow-[0_0_8px_var(--color-signal-bright)]" />
+              Live 001
+            </span>
+          </div>
+
+          <p className="mt-6 font-condensed text-[clamp(2.5rem,4vw,4.25rem)] leading-[0.82] text-screen-ink">
+            Systems
+            <br />
+            that ship.
+          </p>
+          <p className="mt-5 max-w-[30ch] text-sm leading-relaxed text-screen-ink/70 xl:text-[0.95rem]">
+            I build production-grade web, mobile, and desktop products—from
+            resilient APIs to interfaces that feel effortless.
+          </p>
+
+          <div className="mt-6 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => tuneTo(1)}
+              data-cursor="grow"
+              className="group inline-flex items-center gap-2 rounded-full bg-amber px-5 py-2.5 text-xs font-semibold uppercase tracking-[0.1em] text-boot transition-colors hover:bg-amber-soft"
+            >
+              Explore work
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </button>
+            <a
+              href={profile.socials.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cursor="grow"
+              className="inline-flex items-center gap-2 rounded-full border border-screen-ink/20 px-4 py-2.5 text-xs uppercase tracking-[0.1em] text-screen-ink/75 transition-colors hover:border-screen-ink/50 hover:text-screen-ink"
+            >
+              GitHub
+              <span aria-hidden>↗</span>
+            </a>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => tuneTo(1)}
+            className="group mt-7 flex w-full items-end justify-between border-t border-screen-ink/15 pt-4 text-left"
+            data-cursor="grow"
+            aria-label="View SmartDeck in selected work"
+          >
+            <span>
+              <span className="block font-mono text-[0.58rem] uppercase tracking-[0.18em] text-screen-ink/45">
+                Current signal
+              </span>
+              <span className="mt-1 block text-sm font-semibold tracking-tight text-screen-ink transition-colors group-hover:text-amber-soft">
+                SmartDeck
+              </span>
+            </span>
+            <span className="font-terminal text-base text-signal-bright">
+              CH 02 · LOCKED
+            </span>
+          </button>
+        </div>
+      </aside>
+
       <button
         aria-hidden
         tabIndex={-1}
@@ -120,9 +220,24 @@ export default function Hero() {
       </button>
 
       {/* giant name, anchored to the bottom and clipped by the section edge */}
+      {/* The giant word swaps on desktop, so explain the interaction instead of
+          leaving it as an unexplained flourish. */}
+      <p
+        aria-hidden
+        className="absolute inset-x-0 bottom-[18vh] z-30 hidden text-center font-mono text-[0.58rem] uppercase tracking-[0.24em] transition-colors duration-700 xl:block"
+        style={{
+          color: heroDark
+            ? "var(--color-screen-ink)"
+            : "var(--color-ink-faint)",
+          opacity: 0.72,
+        }}
+      >
+        Signal ID · {side === "a" ? "first name" : "surname"} · move cursor
+      </p>
+
       <h1
         aria-label={profile.name}
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 px-6 text-center sm:px-8 md:px-16"
+        className="pointer-events-none absolute inset-x-0 bottom-[5vh] z-10 px-6 text-center sm:bottom-0 sm:px-8 md:px-16"
         style={{ fontSize: "var(--text-name)", lineHeight: 0.82 }}
       >
         <SlotName

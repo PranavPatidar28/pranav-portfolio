@@ -11,8 +11,8 @@ import { profile } from "@/lib/content";
  * the page.
  *
  *  - `active` mirrors the old Loader: true while the scene is still booting.
- *  - First-time visitors watch the whole thing; returning visitors (localStorage
- *    visit count >= 2) get a "PRESS SPACE / ESC / CLICK TO SKIP" affordance.
+ *  - First-time visitors watch the sequence; returning visitors get a short
+ *    calibration beat and enter as soon as the scene is ready.
  *  - prefers-reduced-motion dismisses instantly with no animation.
  *  - `onDone` fires once when the sequence finishes (or is skipped), so the
  *    page can kick off its own reveal.
@@ -45,6 +45,7 @@ export default function BootSequence({
   const [lineCount, setLineCount] = useState(0);
   const [pct, setPct] = useState(0);
   const [showSkip, setShowSkip] = useState(false);
+  const [returning, setReturning] = useState(false);
   const [reduced, setReduced] = useState(false);
   const finishedRef = useRef(false);
   const finishTimeoutRef = useRef<number | null>(null);
@@ -66,7 +67,7 @@ export default function BootSequence({
     onDoneRef.current?.();
     // brief power-on flash, then unmount. Tracked so an early unmount (e.g. a
     // fast skip + navigate) can clear it instead of setState-ing on a dead tree.
-    finishTimeoutRef.current = window.setTimeout(() => setPhase("done"), 650);
+    finishTimeoutRef.current = window.setTimeout(() => setPhase("done"), 500);
   });
 
   // Clear the finish() flash timeout if we unmount before it fires.
@@ -115,6 +116,7 @@ export default function BootSequence({
       const n = Number(localStorage.getItem(key) || "0") + 1;
       localStorage.setItem(key, String(n));
       if (n >= 2) {
+        setReturning(true);
         const t = window.setTimeout(() => setShowSkip(true), 1000);
         return () => window.clearTimeout(t);
       }
@@ -123,11 +125,20 @@ export default function BootSequence({
     }
   }, [reduced]);
 
+  // Repeat visits should feel like changing channels, not rebooting a machine.
+  // The static fallback is already mounted behind this cover, so it is safe to
+  // hand off before WebGL finishes and let the enhanced scene join afterward.
+  useEffect(() => {
+    if (!returning || phase !== "booting") return;
+    const t = window.setTimeout(() => finish.current(), 350);
+    return () => window.clearTimeout(t);
+  }, [returning, phase]);
+
   // type the boot log out, line by line
   useEffect(() => {
     if (reduced || phase !== "booting") return;
     if (lineCount >= BOOT_LINES.length) return;
-    const t = window.setTimeout(() => setLineCount((c) => c + 1), 230);
+    const t = window.setTimeout(() => setLineCount((c) => c + 1), 180);
     return () => window.clearTimeout(t);
   }, [lineCount, phase, reduced]);
 
@@ -149,7 +160,7 @@ export default function BootSequence({
   useEffect(() => {
     if (reduced || phase !== "booting") return;
     if (lineCount >= BOOT_LINES.length && pct >= 100) {
-      const t = window.setTimeout(() => finish.current(), 420);
+      const t = window.setTimeout(() => finish.current(), 300);
       return () => window.clearTimeout(t);
     }
   }, [lineCount, pct, phase, reduced]);
