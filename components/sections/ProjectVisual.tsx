@@ -59,8 +59,13 @@ export default function ProjectVisual({
           src={project.image}
           alt={`${project.title} — ${project.subtitle}`}
           fill
-          sizes={hero ? "(max-width: 768px) 100vw, 672px" : "340px"}
+          sizes={
+            hero
+              ? "(max-width: 768px) calc(100vw - 48px), 672px"
+              : "(max-width: 768px) calc(100vw - 48px), 480px"
+          }
           className="object-cover"
+          style={{ objectPosition: project.imagePosition }}
           priority={false}
         />
       ) : (

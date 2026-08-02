@@ -37,6 +37,7 @@ export type Project = {
   // optional screenshot for the hover preview + case-study hero.
   // When absent, a CRT-themed generated card stands in (see ProjectVisual).
   image?: string;
+  imagePosition?: string;
   // full case study
   problem: string;
   approach: string;
@@ -44,15 +45,53 @@ export type Project = {
   stack: string[];
   links: { live?: string; repo?: string };
   // categorisation for the skills/spatial grouping
-  domain: "Full-Stack" | "Real-Time" | "Frontend" | "Mobile";
+  domain:
+    | "Full-Stack"
+    | "Real-Time"
+    | "Frontend"
+    | "Mobile"
+    | "Desktop"
+    | "Browser Extension";
   // featured ones float largest in the gallery
   featured?: boolean;
 };
 
 export const projects: Project[] = [
   {
+    slug: "smartdeck",
+    title: "SmartDeck",
+    image: "/projects/smartdeck-site-final.png",
+    imagePosition: "center top",
+    subtitle: "A touch-first control surface for Windows",
+    year: "2026",
+    role: "Desktop product — app, platform & integrations",
+    blurb:
+      "An Electron app that turns a tablet or second display into a customizable PC control surface for actions, workflows, and live widgets.",
+    problem:
+      "Useful PC controls are scattered across keyboard shortcuts, system menus, and single-purpose utilities. I wanted to turn a screen people already own into a flexible command center that stays within reach without requiring dedicated hardware.",
+    approach:
+      "I built a Windows-first Electron app with a React renderer and a security-focused main-process action engine. Users can assemble full visual pages from resizable actions and live widgets, run confirmation-gated multi-step workflows, control media and system audio through native Windows helpers, and match pages to the app or task in front of them. Validated configuration imports, rotating backups, a permission-aware local plugin platform, and release verification make it a product rather than a dashboard mockup.",
+    highlights: [
+      "Customizable touch-first pages with resizable actions, widgets, folders, and themes",
+      "Native Windows media, volume, hotkey, app, file, URL, and command controls",
+      "Multi-step workflows with progress, cancellation, and confirmation gates",
+      "Live CPU, memory, audio, and now-playing widgets through a centralized data pipeline",
+      "Context-aware page switching plus starter layouts for work, study, media, and streaming",
+      "Isolated local plugin workers with explicit trust, permissions, and change re-approval",
+    ],
+    stack: ["Electron", "React", "TypeScript", "Vite", "Win32/.NET", "Vitest"],
+    links: {
+      live: "https://smartdeck.site",
+      repo: "https://github.com/PranavPatidar28/SmartDeck",
+    },
+    domain: "Desktop",
+    featured: true,
+  },
+  {
     slug: "intellivault",
     title: "IntelliVault",
+    image: "/projects/intellivault-final.png",
+    imagePosition: "center top",
     subtitle: "An AI knowledge vault with semantic search",
     year: "2026",
     role: "Full-stack — AI, auth & data",
@@ -81,6 +120,7 @@ export const projects: Project[] = [
   {
     slug: "smart-stay",
     title: "SmartStay",
+    image: "/projects/smart-stay.png",
     subtitle: "A student accommodation marketplace",
     year: "2025",
     role: "Full-stack — product & platform",
@@ -108,6 +148,8 @@ export const projects: Project[] = [
   {
     slug: "intellifarm",
     title: "Intellifarm",
+    image: "/projects/intellifarm.png",
+    imagePosition: "center top",
     subtitle: "An India-first crop-season copilot for smallholder farmers",
     year: "2026",
     role: "Full-stack — API, mobile, infra",
@@ -135,6 +177,7 @@ export const projects: Project[] = [
   {
     slug: "mojito",
     title: "Mojito",
+    image: "/projects/mojito.png",
     subtitle: "An animated cocktail showcase",
     year: "2025",
     role: "Frontend — motion & craft",
@@ -181,6 +224,34 @@ export const projects: Project[] = [
     },
     domain: "Real-Time",
     featured: true,
+  },
+  {
+    slug: "slopshield",
+    title: "SlopShield",
+    image: "/projects/slopshield-thumbnail-v3.png",
+    subtitle: "A private, explainable filter for noisy social feeds",
+    year: "2026",
+    role: "Browser extension — product, detection & privacy",
+    blurb:
+      "A local-first Chrome extension that warns, blurs, folds, or hides low-signal content on X, Reddit, and LinkedIn.",
+    problem:
+      "Social feeds are increasingly crowded with repetitive, engagement-optimized posts, but black-box authorship detectors are unreliable and give people little control. I wanted a filter that focuses on observable content patterns, explains every decision, and keeps feed data on the user's device.",
+    approach:
+      "I built a Manifest V3 Chrome extension that incrementally analyzes visible posts with 16 configurable heuristic signals. Each score exposes its contributing reasons, and users choose site-specific thresholds, signal weights, author or keyword rules, and reversible actions ranging from a warning to hiding the post. All analysis runs locally with no account, telemetry, remote classifier, or content upload.",
+    highlights: [
+      "Explainable 0–100 scoring across 16 configurable content signals",
+      "Warn, blur, fold, and hide modes with one-click reveal",
+      "Site adapters for X, Reddit, and LinkedIn feeds",
+      "Local-only processing with no telemetry, account, or remote AI API",
+      "Per-site controls, author and keyword rules, feedback, and settings import/export",
+      "Automated tests plus a real-Chrome runtime harness for supported feed surfaces",
+    ],
+    stack: ["Chrome Extension", "Manifest V3", "React", "TypeScript", "Vite", "Vitest"],
+    links: {
+      live: "https://github.com/PranavPatidar28/slopshield/releases/latest",
+      repo: "https://github.com/PranavPatidar28/slopshield",
+    },
+    domain: "Browser Extension",
   },
 ];
 

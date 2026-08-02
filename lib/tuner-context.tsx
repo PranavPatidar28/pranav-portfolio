@@ -82,20 +82,13 @@ export function TunerProvider({ children }: { children: ReactNode }) {
   }, []);
 
   // Active channel = the section currently crossing the viewport CENTRE.
-  // Replaces the old guess (bucketed scroll progress matched against hardcoded
-  // ZONE_POINTS), which lagged 1–2 sections behind because section heights are
-  // content-driven and `progress` only updated at coarse 20% boundaries. A
-  // center-line IntersectionObserver keeps the set of centre-crossing sections
-  // fresh; a rAF-throttled scroll listener re-picks each frame so the bottom
-  // fallback is evaluated continuously (observers fire only on transitions).
+  // Read the five section bounds directly. A zero-height observer band at 50%
+  // could miss an upward boundary crossing and leave the prior channel latched.
   useEffect(() => {
     const sections = navZones
       .map((z) => document.getElementById(z.id))
       .filter((el): el is HTMLElement => el !== null);
     if (sections.length === 0) return;
-
-    // Sections currently straddling the centre line (maintained by the observer).
-    const visible = new Set<HTMLElement>();
 
     const pick = () => {
       // Bottom-edge fallback: a short final section may never reach centre.
@@ -107,49 +100,32 @@ export function TunerProvider({ children }: { children: ReactNode }) {
         setActiveChannel(sections.length - 1);
         return;
       }
-      if (visible.size === 0) return;
-      // Topmost centre-crossing section wins.
-      let topIdx = -1;
-      let topY = Infinity;
-      for (const el of visible) {
-        const y = el.getBoundingClientRect().top;
-        if (y < topY) {
-          topY = y;
-          topIdx = sections.indexOf(el);
+      const centre = window.innerHeight / 2;
+      for (let i = 0; i < sections.length; i++) {
+        const rect = sections[i].getBoundingClientRect();
+        if (rect.top <= centre && rect.bottom > centre) {
+          setActiveChannel(i);
+          return;
         }
       }
-      if (topIdx >= 0) setActiveChannel(topIdx);
     };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) visible.add(entry.target as HTMLElement);
-          else visible.delete(entry.target as HTMLElement);
-        }
-        pick();
-      },
-      // Zero-height band at the vertical centre: a section "intersects" only
-      // while it covers screen-middle, so exactly the centred section is active.
-      { rootMargin: "-50% 0px -50% 0px", threshold: 0 }
-    );
-    sections.forEach((s) => observer.observe(s));
-
-    // rAF-throttled scroll listener — only re-evaluates the bottom fallback
-    // (the observer already drives the common case). Cheap: one bounds read.
+    // rAF-throttled scroll/resize listener: at most five bounds reads per frame.
     let raf = 0;
-    const onScroll = () => {
+    const schedulePick = () => {
       if (raf) return;
       raf = requestAnimationFrame(() => {
         raf = 0;
         pick();
       });
     };
-    window.addEventListener("scroll", onScroll, { passive: true });
+    pick();
+    window.addEventListener("scroll", schedulePick, { passive: true });
+    window.addEventListener("resize", schedulePick);
 
     return () => {
-      observer.disconnect();
-      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("scroll", schedulePick);
+      window.removeEventListener("resize", schedulePick);
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);

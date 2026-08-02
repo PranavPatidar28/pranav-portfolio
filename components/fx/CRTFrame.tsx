@@ -122,7 +122,7 @@ export default function CRTFrame() {
       {/* film grain (animated; absent under reduced motion) */}
       <canvas
         ref={grainRef}
-        className="absolute inset-0 h-full w-full opacity-[0.05] mix-blend-multiply"
+        className="absolute inset-0 h-full w-full opacity-[0.035] mix-blend-multiply"
       />
 
       {/* static fine-grain darkening — a small high-frequency noise tile in
@@ -130,7 +130,7 @@ export default function CRTFrame() {
           darkness in one pass, independent of the animated grain. Kept low so
           it never muddies the content. */}
       <div
-        className="absolute inset-0 mix-blend-multiply opacity-[0.10]"
+        className="absolute inset-0 mix-blend-multiply opacity-[0.065]"
         style={{
           backgroundImage:
             "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='90' height='90'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E\")",
@@ -141,11 +141,11 @@ export default function CRTFrame() {
       {/* overall darkening tint — a flat low-opacity wash that gently dims the
           whole screen for a slightly moodier, screen-lit feel. Normal blend so
           it darkens uniformly without altering hue. */}
-      <div className="absolute inset-0 bg-[#0a0908] opacity-[0.08]" />
+      <div className="absolute inset-0 bg-[#0a0908] opacity-[0.05]" />
 
       {/* scanlines — horizontal raster lines */}
       <div
-        className="absolute inset-0 opacity-[0.45]"
+        className="absolute inset-0 opacity-[0.28]"
         style={{
           backgroundImage:
             "repeating-linear-gradient(to bottom, rgba(0,0,0,0.07) 0px, rgba(0,0,0,0.07) 1px, transparent 1.5px, transparent 3px)",
@@ -156,7 +156,7 @@ export default function CRTFrame() {
           shadow-mask shimmer. Multiply blend so it tints the bright stage
           rather than washing out; kept low-opacity so text stays crisp. */}
       <div
-        className="absolute inset-0 opacity-[0.5] mix-blend-multiply"
+        className="absolute inset-0 opacity-[0.22] mix-blend-multiply"
         style={{
           backgroundImage:
             "repeating-linear-gradient(to right, rgba(255,0,0,0.06) 0px, rgba(255,0,0,0.06) 1px, rgba(0,255,0,0.06) 1px, rgba(0,255,0,0.06) 2px, rgba(0,0,255,0.06) 2px, rgba(0,0,255,0.06) 3px)",

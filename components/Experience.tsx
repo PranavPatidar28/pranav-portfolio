@@ -33,7 +33,7 @@ export default function Experience() {
       setSceneReady(true);
       return;
     }
-    const ceiling = setTimeout(() => setSceneReady(true), 4000);
+    const ceiling = setTimeout(() => setSceneReady(true), 2400);
     return () => clearTimeout(ceiling);
   }, [cap.ready, cap.use3D]);
 
